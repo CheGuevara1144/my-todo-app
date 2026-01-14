@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Это заставит Tailwind распознать свои цвета, если стандартные не подгрузились */
+@theme {
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+  --color-slate-700: #334155;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+}
+
+body {
+  @apply bg-slate-900 text-slate-200;
+  margin: 0;
+  font-family: sans-serif;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
