@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'; // Добавь onMounted
 import { todos, newTask, addTask, removeTodo, count } from '../store.js';
 
+const selectedCategory = ref('🏠 Дом');
 const filter = ref('all');
 const taskInput = ref(null); // Создаем ссылку для инпута
 
@@ -9,6 +10,15 @@ const taskInput = ref(null); // Создаем ссылку для инпута
 onMounted(() => {
   taskInput.value?.focus(); 
 });
+function addNewTodo() {
+  if (newTask.value.trim() === '') return;
+
+  // Мы передаем ссылку на инпут (taskInput) и значение категории
+  addTask(taskInput, selectedCategory.value); 
+  
+  newTask.value = ''; // Очищаем поле ввода
+  taskInput.value?.focus(); // Возвращаем фокус
+}
 
 const filteredTodos = computed(() => {
   if (filter.value === 'active') return todos.value.filter(t => !t.done);
@@ -29,10 +39,36 @@ const filteredTodos = computed(() => {
 
 </div>
   <div class="space-y-6">
-    <div class="flex gap-2">
-      <input ref="taskInput" v-model="newTask" @keyup.enter="addTask" class="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3" placeholder="Что запланируем?">
-      <button @click="addTask" class="bg-emerald-500 text-slate-900 font-bold px-6 rounded-xl">+</button>
-    </div>
+    <div class="flex flex-col gap-3 mb-6">
+  <div class="flex gap-2">
+    <select 
+  v-model="selectedCategory" 
+  @change="taskInput.focus()" 
+  class="p-2 border rounded-lg bg-slate-800 text-white border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+>
+  <option value="🏠 Дом">🏠 Дом</option>
+  <option value="💻 Работа">💻 Работа</option>
+  <option value="📚 Учеба">📚 Учеба</option>
+  <option value="🎯 Личное">🎯 Личное</option>
+</select>
+
+    <input
+      ref="taskInput"
+      v-model="newTask"
+      @keyup.enter="addNewTodo"
+      type="text"
+      placeholder="Что нужно сделать?"
+      class="flex-1 p-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+    />
+    
+    <button
+      @click="addNewTodo"
+      class="bg-emerald-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
+    >
+      Добавить
+    </button>
+  </div>
+</div>
     
     <div class="flex bg-slate-900/50 p-1 rounded-lg">
       <button @click="filter = 'all'" :class="filter === 'all' ? 'bg-slate-700 text-white' : 'text-slate-400'" class="flex-1 py-1 rounded-md text-sm">Все</button>
@@ -56,6 +92,9 @@ const filteredTodos = computed(() => {
   @change="count++" 
   class="w-5 h-5 accent-emerald-500"
 >
+    <span class="text-[10px] px-2 py-0.5 bg-slate-700 text-emerald-400 rounded-full uppercase font-black mr-2">
+  {{ todo.category }}
+</span>
     <span :class="{'line-through text-slate-500': todo.done}" class="flex-1 text-slate-200">
       {{ todo.text }}
     </span>

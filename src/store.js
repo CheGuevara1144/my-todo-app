@@ -12,15 +12,17 @@ export const newTask = ref("");
 // Вспомогательная функция для получения времени
 const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-export const addTask = (inputRef) => {
-  // Принимаем ссылку на инпут
+export const addTask = (inputRef, category = "🏠 Дом") => {
+  // Добавили category
   if (newTask.value.trim() === "") return;
 
   const todoText = newTask.value;
+
   todos.value.push({
-    text: todoText,
-    done: false,
     id: Date.now(),
+    text: todoText,
+    category: category, // КЛЮЧЕВОЙ МОМЕНТ: сохраняем выбранную категорию
+    done: false,
   });
 
   newTask.value = "";
