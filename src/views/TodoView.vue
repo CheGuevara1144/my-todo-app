@@ -131,12 +131,6 @@ const getCategoryClass = (category) => {
   <p class="text-slate-500 text-sm">Добавьте новую задачу выше,<br>чтобы начать день продуктивно.</p>
 </div>
 
-<div v-if="todos.length === 0" class="text-center py-16">
-  <div class="text-6xl mb-4 animate-bounce">✨</div>
-  <h3 class="text-slate-300 font-bold text-xl mb-1">Все дела сделаны!</h3>
-  <p class="text-slate-500 text-sm">Добавьте новую задачу выше,<br>чтобы начать день продуктивно.</p>
-</div>
-  </div>
 </template>
 
 <style scoped>
