@@ -25,6 +25,16 @@ const filteredTodos = computed(() => {
   if (filter.value === 'done') return todos.value.filter(t => t.done);
   return todos.value;
 });
+
+const getCategoryClass = (category) => {
+  switch (category) {
+    case '🏠 Дом': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+    case '💻 Работа': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+    case '📚 Учеба': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+    case '🎯 Личное': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+    default: return 'bg-slate-700 text-slate-300';
+  }
+};
 </script>
 
 <template>
@@ -92,7 +102,10 @@ const filteredTodos = computed(() => {
   @change="count++" 
   class="w-5 h-5 accent-emerald-500"
 >
-    <span class="text-[10px] px-2 py-0.5 bg-slate-700 text-emerald-400 rounded-full uppercase font-black mr-2">
+   <span 
+  :class="getCategoryClass(todo.category)"
+  class="text-[10px] px-2 py-0.5 rounded-full border uppercase font-black mr-2 transition-all duration-300"
+>
   {{ todo.category }}
 </span>
     <span :class="{'line-through text-slate-500': todo.done}" class="flex-1 text-slate-200">
