@@ -47,91 +47,61 @@ const getCategoryClass = (category) => {
 </script>
 
 <template>
-<div class="max-w-2xl mx-auto px-4 sm:px-0 py-4 sm:py-8">
-  <div>
-    <h1 class="text-3xl font-black text-white">Мои задачи</h1>
-    <p class="text-slate-500 text-sm font-medium">У вас {{ filteredTodos.length }} задач на сегодня</p>
-  </div>
-  <div class="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold border border-emerald-500/20">
-    <span>{{ todos.filter(t => t.done).length }} / {{ todos.length }} готово</span>
-  </div>
+  <div class="max-w-2xl mx-auto px-4 sm:px-0 py-4 sm:py-8">
+    
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div class="text-2xl sm:text-3xl font-black text-white flex items-center gap-2 flex-wrap">
+        Привет, <input v-model="userName" @blur="saveName" class="bg-transparent border-b-2 border-emerald-500/30 focus:border-emerald-500 outline-none w-32 sm:w-auto" />!
+      </div>
+    </div>
 
-</div>
-  <div class="flex flex-col gap-3 mb-8">
-  <div class="flex flex-col sm:flex-row gap-2">
-    <select 
-      v-model="selectedCategory" 
-      @change="taskInput.focus()"
-      class="w-full sm:w-auto p-3 bg-slate-800 text-white border border-slate-700 rounded-xl text-base outline-none"
-    >
-      <option value="🏠 Дом">🏠 Дом</option>
-      <option value="💻 Работа">💻 Работа</option>
-      <option value="📚 Учеба">📚 Учеба</option>
-      <option value="🎯 Личное">🎯 Личное</option>
-    </select>
+    <h2 class="text-3xl font-black text-white mb-2">Мои задачи</h2>
+    <p class="text-slate-500 mb-6">У вас {{ todos.length }} задач на сегодня</p>
 
-    <div class="flex gap-2 w-full">
-      <input 
-        ref="taskInput"
-        v-model="newTask"
-        @keyup.enter="addNewTodo"
-        type="text"
-        placeholder="Что нужно сделать?"
-        class="flex-1 p-3 bg-slate-900/50 border border-slate-700 rounded-xl text-base focus:ring-2 focus:ring-emerald-500 outline-none min-w-0"
-      />
-      <button 
-        @click="addNewTodo"
-        class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-6 rounded-xl font-bold transition-transform active:scale-95"
-      >
-        +
+    <div class="flex flex-col gap-3 mb-8">
+      <div class="flex flex-col sm:flex-row gap-2">
+        <select v-model="selectedCategory" @change="taskInput.focus()" class="w-full sm:w-auto p-3 bg-slate-800 text-white border border-slate-700 rounded-xl text-base outline-none">
+          <option value="🏠 Дом">🏠 Дом</option>
+          <option value="💻 Работа">💻 Работа</option>
+          <option value="📚 Учеба">📚 Учеба</option>
+          <option value="🎯 Личное">🎯 Личное</option>
+        </select>
+
+        <div class="flex gap-2 w-full">
+          <input ref="taskInput" v-model="newTask" @keyup.enter="addNewTodo" type="text" placeholder="Что нужно сделать?" class="flex-1 p-3 bg-slate-900/50 border border-slate-700 rounded-xl text-base focus:ring-2 focus:ring-emerald-500 outline-none min-w-0" />
+          <button @click="addNewTodo" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-6 rounded-xl font-bold transition-transform active:scale-95">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex bg-slate-900/50 p-1 rounded-xl mb-6 overflow-x-auto">
+      <button v-for="f in ['all', 'active', 'done']" :key="f" @click="filter = f" :class="filter === f ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white'" class="flex-1 py-2 px-4 rounded-lg font-bold transition-all capitalize">
+        {{ f }}
       </button>
     </div>
-  </div>
-</div>
-    
-    <div class="flex bg-slate-900/50 p-1 rounded-lg">
-      <button @click="filter = 'all'" :class="filter === 'all' ? 'bg-slate-700 text-white' : 'text-slate-400'" class="flex-1 py-1 rounded-md text-sm">Все</button>
-      <button @click="filter = 'active'" :class="filter === 'active' ? 'bg-slate-700 text-white' : 'text-slate-400'" class="flex-1 py-1 rounded-md text-sm">Активные</button>
-      <button @click="filter = 'done'" :class="filter === 'done' ? 'bg-slate-700 text-white' : 'text-slate-400'" class="flex-1 py-1 rounded-md text-sm">Готово</button>
+
+    <TransitionGroup name="list" tag="ul" class="space-y-2">
+      <li v-for="todo in filteredTodos" :key="todo.id" class="flex items-center gap-3 bg-slate-800/40 p-4 rounded-xl border border-white/5 shadow-lg">
+        <input type="checkbox" v-model="todo.done" class="w-6 h-6 rounded-md accent-emerald-500" />
+        <div class="flex flex-col sm:flex-row sm:items-center flex-1 min-w-0">
+          <span :class="getCategoryClass(todo.category)" class="text-[10px] w-fit px-2 py-0.5 rounded-full border uppercase font-black mb-1 sm:mb-0 sm:mr-2">
+            {{ todo.category }}
+          </span>
+          <span :class="{'line-through text-slate-500': todo.done}" class="text-white text-base truncate">
+            {{ todo.text }}
+          </span>
+        </div>
+        <button @click="removeTodo(todo.id)" class="p-2 text-slate-500 hover:text-red-400">✕</button>
+      </li>
+    </TransitionGroup>
+
+    <div v-if="todos.length === 0" class="text-center py-16">
+      <div class="text-6xl mb-4 animate-bounce">✨</div>
+      <h3 class="text-slate-300 font-bold text-xl mb-1">Все дела сделаны!</h3>
+      <p class="text-slate-500 text-sm">Добавьте новую задачу выше.</p>
     </div>
 
-    <TransitionGroup 
-  name="list" 
-  tag="ul" 
-  class="space-y-2"
->
-  <li class="flex items-center gap-3 bg-slate-800/40 p-3 sm:p-4 rounded-xl border border-slate-700/50 shadow-lg active:bg-slate-800/60 transition-colors">
-  <input 
-    type="checkbox" 
-    v-model="todo.done"
-    @change="count++"
-    class="w-6 h-6 rounded-md accent-emerald-500 cursor-pointer" 
-  />
-  
-  <div class="flex flex-col sm:flex-row sm:items-center flex-1 min-w-0">
-    <span 
-      :class="getCategoryClass(todo.category)" 
-      class="text-[10px] w-fit px-2 py-0.5 rounded-full border uppercase font-black mb-1 sm:mb-0 sm:mr-2"
-    >
-      {{ todo.category }}
-    </span>
-    <span :class="{'line-through text-slate-500': todo.done}" class="text-white text-base truncate">
-      {{ todo.text }}
-    </span>
-  </div>
-
-  <button @click="removeTodo(todo.id)" class="p-2 text-slate-500 hover:text-red-400">
-    ✕
-  </button>
-</li>
-</TransitionGroup>
-<div v-if="todos.length === 0" class="text-center py-16">
-  <div class="text-6xl mb-4 animate-bounce">✨</div>
-  <h3 class="text-slate-300 font-bold text-xl mb-1">Все дела сделаны!</h3>
-  <p class="text-slate-500 text-sm">Добавьте новую задачу выше,<br>чтобы начать день продуктивно.</p>
-</div>
-
-</template>
+  </div> </template>
 
 <style scoped>
 /* Плавность для всех изменений */
