@@ -71,7 +71,7 @@ onMounted(() => {
   Привет, 
   <input 
     v-model="name" 
-    class="bg-transparent border-b border-white/30 focus:outline-none focus:border-white w-auto min-w-[100px] text-center transition-all"
+    class="bg-transparent border-b-2 border-white/30 focus:border-white outline-none w-[90px] sm:w-[180px] text-white placeholder-white/50 px-1 text-center truncate"
     placeholder="твое имя"
   >!
 </h1>
