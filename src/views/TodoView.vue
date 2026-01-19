@@ -21,9 +21,18 @@ function addNewTodo() {
 }
 
 const filteredTodos = computed(() => {
-  if (filter.value === 'active') return todos.value.filter(t => !t.done);
-  if (filter.value === 'done') return todos.value.filter(t => t.done);
-  return todos.value;
+  let list = [...todos.value]; // Копируем массив, чтобы не менять оригинал напрямую
+
+  // 1. Сначала применяем фильтр (Все / Активные / Готово)
+  if (filter.value === 'active') {
+    list = list.filter(t => !t.done);
+  } else if (filter.value === 'done') {
+    list = list.filter(t => t.done);
+  }
+
+  // 2. Умная сортировка: невыполненные (false) будут выше выполненных (true)
+  // В JS: false (0) идет перед true (1) при обычной сортировке
+  return list.sort((a, b) => a.done - b.done);
 });
 
 const getCategoryClass = (category) => {
@@ -38,7 +47,7 @@ const getCategoryClass = (category) => {
 </script>
 
 <template>
-<div class="flex justify-between items-end mb-6">
+<div class="max-w-2xl mx-auto px-4 sm:px-0 py-4 sm:py-8">
   <div>
     <h1 class="text-3xl font-black text-white">Мои задачи</h1>
     <p class="text-slate-500 text-sm font-medium">У вас {{ filteredTodos.length }} задач на сегодня</p>
@@ -48,35 +57,35 @@ const getCategoryClass = (category) => {
   </div>
 
 </div>
-  <div class="space-y-6">
-    <div class="flex flex-col gap-3 mb-6">
-  <div class="flex gap-2">
+  <div class="flex flex-col gap-3 mb-8">
+  <div class="flex flex-col sm:flex-row gap-2">
     <select 
-  v-model="selectedCategory" 
-  @change="taskInput.focus()" 
-  class="p-2 border rounded-lg bg-slate-800 text-white border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
->
-  <option value="🏠 Дом">🏠 Дом</option>
-  <option value="💻 Работа">💻 Работа</option>
-  <option value="📚 Учеба">📚 Учеба</option>
-  <option value="🎯 Личное">🎯 Личное</option>
-</select>
-
-    <input
-      ref="taskInput"
-      v-model="newTask"
-      @keyup.enter="addNewTodo"
-      type="text"
-      placeholder="Что нужно сделать?"
-      class="flex-1 p-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-    />
-    
-    <button
-      @click="addNewTodo"
-      class="bg-emerald-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
+      v-model="selectedCategory" 
+      @change="taskInput.focus()"
+      class="w-full sm:w-auto p-3 bg-slate-800 text-white border border-slate-700 rounded-xl text-base outline-none"
     >
-      Добавить
-    </button>
+      <option value="🏠 Дом">🏠 Дом</option>
+      <option value="💻 Работа">💻 Работа</option>
+      <option value="📚 Учеба">📚 Учеба</option>
+      <option value="🎯 Личное">🎯 Личное</option>
+    </select>
+
+    <div class="flex gap-2 w-full">
+      <input 
+        ref="taskInput"
+        v-model="newTask"
+        @keyup.enter="addNewTodo"
+        type="text"
+        placeholder="Что нужно сделать?"
+        class="flex-1 p-3 bg-slate-900/50 border border-slate-700 rounded-xl text-base focus:ring-2 focus:ring-emerald-500 outline-none min-w-0"
+      />
+      <button 
+        @click="addNewTodo"
+        class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-6 rounded-xl font-bold transition-transform active:scale-95"
+      >
+        +
+      </button>
+    </div>
   </div>
 </div>
     
@@ -91,30 +100,30 @@ const getCategoryClass = (category) => {
   tag="ul" 
   class="space-y-2"
 >
-  <li 
-    v-for="todo in filteredTodos" 
-    :key="todo.id" 
-    class="flex items-center gap-3 bg-slate-800/40 p-3 rounded-xl border border-slate-700/50"
-  >
-    <input 
-  type="checkbox" 
-  v-model="todo.done" 
-  @change="count++" 
-  class="w-5 h-5 accent-emerald-500"
->
-   <span 
-  :class="getCategoryClass(todo.category)"
-  class="text-[10px] px-2 py-0.5 rounded-full border uppercase font-black mr-2 transition-all duration-300"
->
-  {{ todo.category }}
-</span>
-    <span :class="{'line-through text-slate-500': todo.done}" class="flex-1 text-slate-200">
+  <li class="flex items-center gap-3 bg-slate-800/40 p-3 sm:p-4 rounded-xl border border-slate-700/50 shadow-lg active:bg-slate-800/60 transition-colors">
+  <input 
+    type="checkbox" 
+    v-model="todo.done"
+    @change="count++"
+    class="w-6 h-6 rounded-md accent-emerald-500 cursor-pointer" 
+  />
+  
+  <div class="flex flex-col sm:flex-row sm:items-center flex-1 min-w-0">
+    <span 
+      :class="getCategoryClass(todo.category)" 
+      class="text-[10px] w-fit px-2 py-0.5 rounded-full border uppercase font-black mb-1 sm:mb-0 sm:mr-2"
+    >
+      {{ todo.category }}
+    </span>
+    <span :class="{'line-through text-slate-500': todo.done}" class="text-white text-base truncate">
       {{ todo.text }}
     </span>
-    <button @click="removeTodo(todo.id)" class="text-slate-500 hover:text-red-400">
-      ✕
-    </button>
-  </li>
+  </div>
+
+  <button @click="removeTodo(todo.id)" class="p-2 text-slate-500 hover:text-red-400">
+    ✕
+  </button>
+</li>
 </TransitionGroup>
 <div v-if="todos.length === 0" class="text-center py-16">
   <div class="text-6xl mb-4 animate-bounce">✨</div>
