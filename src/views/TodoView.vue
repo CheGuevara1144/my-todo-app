@@ -49,12 +49,6 @@ const getCategoryClass = (category) => {
 <template>
   <div class="max-w-2xl mx-auto px-4 sm:px-0 py-4 sm:py-8">
     
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-      <div class="text-2xl sm:text-3xl font-black text-white flex items-center gap-2 flex-wrap">
-        Привет, <input v-model="userName" @blur="saveName" class="bg-transparent border-b-2 border-emerald-500/30 focus:border-emerald-500 outline-none w-32 sm:w-auto" />!
-      </div>
-    </div>
-
     <h2 class="text-3xl font-black text-white mb-2">Мои задачи</h2>
     <p class="text-slate-500 mb-6">У вас {{ todos.length }} задач на сегодня</p>
 
@@ -75,7 +69,7 @@ const getCategoryClass = (category) => {
     </div>
 
     <div class="flex bg-slate-900/50 p-1 rounded-xl mb-6 overflow-x-auto">
-      <button v-for="f in ['all', 'active', 'done']" :key="f" @click="filter = f" :class="filter === f ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white'" class="flex-1 py-2 px-4 rounded-lg font-bold transition-all capitalize">
+      <button v-for="f in ['Все', 'Активные', 'Выполненные']" :key="f" @click="filter = f" :class="filter === f ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white'" class="flex-1 py-2 px-4 rounded-lg font-bold transition-all capitalize">
         {{ f }}
       </button>
     </div>
