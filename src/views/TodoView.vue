@@ -54,12 +54,16 @@ const getCategoryClass = (category) => {
 
     <div class="flex flex-col gap-3 mb-8">
       <div class="flex flex-col sm:flex-row gap-2">
-        <select v-model="selectedCategory" @change="taskInput.focus()" class="w-full sm:w-auto p-3 bg-slate-800 text-white border border-slate-700 rounded-xl text-base outline-none">
-          <option value="🏠 Дом">🏠 Дом</option>
-          <option value="💻 Работа">💻 Работа</option>
-          <option value="📚 Учеба">📚 Учеба</option>
-          <option value="🎯 Личное">🎯 Личное</option>
-        </select>
+        <select 
+  v-model="selectedCategory" 
+  @change="taskInput.focus()" 
+  class="w-full sm:w-auto p-3 bg-slate-800 text-white border border-slate-700 rounded-xl text-base outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all cursor-pointer appearance-none"
+>
+  <option value="🏠 Дом">🏠 Дом</option>
+  <option value="💻 Работа">💻 Работа</option>
+  <option value="📚 Учеба">📚 Учеба</option>
+  <option value="🎯 Личное">🎯 Личное</option>
+</select>
 
         <div class="flex gap-2 w-full">
           <input ref="taskInput" v-model="newTask" @keyup.enter="addNewTodo" type="text" placeholder="Что нужно сделать?" class="flex-1 p-3 bg-slate-900/50 border border-slate-700 rounded-xl text-base focus:ring-2 focus:ring-emerald-500 outline-none min-w-0" />
