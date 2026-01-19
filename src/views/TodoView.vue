@@ -27,7 +27,7 @@ const filteredTodos = computed(() => {
   if (filter.value === 'active') {
     list = list.filter(t => !t.done);
   } else if (filter.value === 'done') {
-    list = list.filter(t => t.done);
+    list = list.filter(t => t.done); 
   }
 
   // 2. Умная сортировка: невыполненные (false) будут выше выполненных (true)
@@ -72,9 +72,30 @@ const getCategoryClass = (category) => {
       </div>
     </div>
 
-    <div class="flex bg-slate-900/50 p-1 rounded-xl mb-6 overflow-x-auto">
-      <button v-for="f in ['Все', 'Активные', 'Выполненные']" :key="f" @click="filter = f" :class="filter === f ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white'" class="flex-1 py-2 px-4 rounded-lg font-bold transition-all capitalize">
-        {{ f }}
+    <div class="grid grid-cols-3 bg-slate-900/50 p-1 rounded-xl mb-6 gap-1">
+      
+      <button 
+        @click="filter = 'all'" 
+        :class="filter === 'all' ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'" 
+        class="py-2.5 rounded-lg font-bold transition-all text-sm sm:text-base"
+      >
+        Все
+      </button>
+
+      <button 
+        @click="filter = 'active'" 
+        :class="filter === 'active' ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'" 
+        class="py-2.5 rounded-lg font-bold transition-all text-sm sm:text-base"
+      >
+        Активные
+      </button>
+
+      <button 
+        @click="filter = 'done'" 
+        :class="filter === 'done' ? 'bg-slate-700 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'" 
+        class="py-2.5 rounded-lg font-bold transition-all text-sm sm:text-base"
+      >
+        Выполненные
       </button>
     </div>
 
